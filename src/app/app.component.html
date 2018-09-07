@@ -1,0 +1,362 @@
+<div class="primary-app flex-parent__column home ">
+
+    <header id="header" class="header flex-parent__column">
+      <div class="width-wrapper header__container flex-child__fill flex-parent__column">
+        <div class="header__main flex-child__auto flex-parent__wrap">
+          <a href="/" title="BookScouter" class="header__logo flex-child__auto" id="BookScouterLogo">
+            <img src="../assets/images/bookscan.png" alt="BookScouter logo">
+          </a>
+          <div class="header__icon toggle--menu icon__container flex-child__auto">
+            <i class="icon--menu"></i>
+          </div>
+          <div class="header__icon toggle--search icon__container flex-child__auto">
+            <i class="icon--search"></i>
+          </div>
+          <!-- <div class="header__cta flex-parent flex-child collapsable collapsed">
+            <a class="cta__login flex-parent__center-both flex-child__50 login action" href="#">
+              <i class="icon--login"></i>Login</a>
+            <a class="cta__register btn btn--accent flex-child__50 register action" href="#">Register</a>
+          </div> -->
+          <div class="header__menu flex-child__auto collapsable collapsed">
+            <ul class="menu menu--primary flex-parent__wrap">
+              <li class="menu__item menu__item--primary flex-child__50">
+                <a href="/vendors" class="menu__link menu__link--primary">Vendors</a>
+              </li>
+              <!-- <li class="menu__item menu__item--primary flex-child__50">
+                <a href="/tools" class="menu__link menu__link--primary">Tools</a>
+              </li> -->
+              <!-- <li class="menu__item menu__item--primary flex-child__50">
+                <a href="/tips" class="menu__link menu__link--primary">Tips</a>
+              </li> -->
+              <!-- <li class="menu__item menu__item--primary flex-child__50">
+                <a href="/blog" class="menu__link menu__link--primary">Blog</a>
+              </li> -->
+              <!-- <li class="menu__item menu__item--primary flex-child__50">
+                <a href="/contact" class="menu__link menu__link--primary">Contact</a>
+              </li> -->
+            </ul>
+          </div>
+        </div>
+        <div class="header__search collapsable collapsed flex-child__fill">
+          <h1 class="hero__title" *ngIf="!dispdata">
+            <strong>Buy and Sell</strong> your textbooks for the best price</h1>
+          <div id="searchContainer" class="input__wrapper input__wrapper--search">
+            <i class="icon--search"></i>
+            <input type="text" class="input--text input--search" placeholder="Search by ISBN Number..." >
+            <div class="dropdown">
+              <input id="checkbox1" type="checkbox" name="checkbox" checked />
+              <label for="checkbox1">
+                <div class="drop-ttl">{{reqType}} </div>
+                <ul>
+                  <li (click)="changeRequest('Sell'); ">
+                    <a>Sell</a>
+                  </li>
+                  <li (click)="changeRequest('Buy');"><a>Buy</a></li>
+                </ul>
+              </label>
+            </div>
+  
+            <button tabindex="0" type="button" class="btn btn--accent search__btn" (click)="fetchData(isbn)">Search</button>
+          </div>
+  
+        </div>
+      </div>
+      <div *ngIf="onloading" class="loaderclass">
+        <div class="bookshelf_wrapper">
+          <ul class="books_list">
+            <li class="book_item first"></li>
+            <li class="book_item second"></li>
+            <li class="book_item third"></li>
+            <li class="book_item fourth"></li>
+            <li class="book_item fifth"></li>
+            <li class="book_item sixth"></li>
+          </ul>
+          <div class="shelf"></div>
+        </div>
+  
+      </div>
+  
+    </header>
+    <div id="content" class="content flex-child__fill flex-parent__column" >
+      <!-- Sell Table Starts -->
+      <section class="content--sell" *ngIf="reqType=='Sell'">
+        <div class="results__heading">
+          <div class="width-wrapper">
+            <div class="book--single">
+              <div class="book hasFeatureVendor">
+                <div class="book__img-container">
+                  <img :src="book.bookImage" alt="book.title">
+                </div>
+                <div class="book__details flex-parent__wrap">
+                  <h2 class="book__title flex-child__100">{{book.title}}</h2>
+                  <div class="book__details--basic flex-child__fill">
+                    <div class="book__detail book__detail--published">
+                      <strong class="book__label">Published: </strong>
+                      <span class="book__text"> {{book.publicationDate}}</span>
+                    </div>
+                  </div>
+                  <div class="book__details--isbn flex-child">
+                    <div class="book__detail book__detail--isbn10">
+                      <strong class="book__label">ISBN-10:</strong>
+                      <span class="book__text">{{book.isbn10}}</span>
+                    </div>
+                    <div class="book__detail book__detail--isbn13">
+                      <strong class="book__label">ISBN-13:</strong>
+                      <span class="book__text">{{book.isbn13}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="buying-info flex-parent__center-main" *ngIf="reqType=='Sell'">
+                    <div class="buy-info--container flex-child__fill">
+                      <a (click)="changeRequest('Buy'); fetchData(isbn)" class="link--ext link--buy-info styled-link flex-parent__center-both">
+                        <span class="buy-info--text flex-child__100">Buy This Book</span>
+                      </a>
+                    </div>
+                    <div class="buy-info--container flex-child__fill">
+                      <a :href="amazonurl+isbn" class="link--ext link--buy-info styled-link flex-parent__center-both">
+                        <span class="buy-info--text flex-child__100">View on Amazon</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="buying-info flex-parent__center-main" >
+                    <div class="buy-info--container flex-child__fill">
+                      <a (click)="changeRequest('Sell'); fetchData(isbn)" class="link--ext link--buy-info styled-link flex-parent__center-both">
+                        <span class="buy-info--text flex-child__100">Sell This Book</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="featured-vendor-container">
+                <div *ngIf="reqType == 'Sell'" class="featured-vendor">
+                  <div class="featured-vendor__inner shadow__item flex-parent__wrap flex-parent__center-cross">
+                    <div class="featured__details flex-child__100">
+                      <div class="featured__name">
+                        <span class="featured__label">Best Vendor: </span>
+                        <span class="featured__text">{{bestVendor.bestVendorName }}
+                        </span>
+                      </div>
+                      <div class="featured__image">
+                        <!-- <img alt="CKY Books logo" src="`../assets/images/logos/vendors/${bestVendor.bestVendorName}.png`"> -->
+                      </div>
+  
+                    </div>
+                    <div class="featured__price-container flex-child__fill flex-parent__center-cross flex-parent__space-between">
+                      <div class="flex-child__auto">
+                        <div class="featured__label">Best Price</div>
+                        <div class="featured__price">${{bestVendor.bestVendorPrice }}
+                        </div>
+                      </div>
+                      <div class="flex-child__auto">
+                        <a href="/exits/sell/39/0062688928" target="_blank" class="link--sell btn--accent btn featured action" data-price="1.41"
+                          data-vendor="CKY Books" data-vendorid="39" data-rank="1">{{reqType}}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="results">
+          <div class="width-wrapper" *ngIf="reqType == 'Sell'">
+            <h3 class="price__heading">Featured Vendors Price Offers</h3>
+            <div class="price-container" *ngFor="let vendor of vendors
+                         " >
+              <div class="price__item flex-parent__center-cross">
+                <div class="price__detail price__detail--name flex-child__fill">
+                  <a href="#" class="action showReviews" data-idslug="39-cky-books" data-name="CKY Books">{{vendor.name}}</a>
+                </div>
+  
+                <div class="price__detail price__detail--price flex-child__auto flex-parent__center-cross">
+                  <div class="price__child price__price flex-child__auto"> <span *ngIf="!isNaN(vendor.price)">$</span> {{vendor.price}}</div>
+                  <div class="price__child price__link flex-child__auto">
+                    <a :href="vendor.url" target="_blank" class="link--sell btn action" data-price="1.41" data-rank="1" data-vendor="CKY Books"
+                      data-vendorid="39" *ngIf="!isNaN(vendor.price)">{{reqType}}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="showAll--container">
+              <a class="btn btn--accent btn--feedback showAll action">Show more vendors</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Sell Table Section Ends -->
+  
+      <!-- Buy Table Section Starts -->
+      <section class="content-buy" *ngIf="reqType=='Buy'">
+        <!-- Book Heading -->
+        <div class="results__heading">
+          <div class="width-wrapper">
+            <div class="book--single">
+              <div class="book">
+                <div class="book__img-container">
+                  <img :src="book.bookImage" alt="A Game of Thrones: The Illustrated Edition: A Song of Ice and Fire: Book One">
+                </div>
+                <div class="book__details flex-parent__wrap">
+                  <h2 class="book__title flex-child__100">{{book.title}}</h2>
+                  <div class="book__details--basic flex-child__fill">
+                    <!-- <div class="book__detail book__detail--author">
+                      <strong class="book__label">Author:</strong>
+                      <span class="book__text">{{book.author}}</span>
+                    </div> -->
+                    <div class="book__detail book__detail--published">
+                      <strong class="book__label">Published: </strong>
+                      <span class="book__text"> {{book.publicationDate}}</span>
+                    </div>
+                  </div>
+  
+                  <div class="book__details--isbn flex-child">
+                    <div class="book__detail book__detail--isbn10">
+                      <strong class="book__label">ISBN-10:</strong>
+                      <span class="book__text">{{book.isbn10}}</span>
+                    </div>
+                    <div class="book__detail book__detail--isbn13">
+                      <strong class="book__label">ISBN-13:</strong>
+                      <span class="book__text">{{book.isbn13}}</span>
+                    </div>
+                  </div>
+  
+                  <div class="buy-side-details flex-child__100">
+                    <!-- <div class="buyback__text small">
+                      <div class="buyback__text--inner">
+                        "This book has an estimated buyback price of "
+                        <strong>$7.17</strong>
+                      </div>
+                    </div> -->
+                    <div class="buy-info--container flex-child__fill">
+                      <a (click)="changeRequest('Sell'); fetchData(isbn)" class="link--ext link--buy-info styled-link flex-parent__center-both">
+                        <span class="buy-info--text flex-child__100">Sell This Book</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Book Result -->
+        <div class="results">
+          <div class="width-wrapper">
+            <!-- <div class="book__filter filter flex-parent__center-cross">
+              <div class="filter__title">results to show:</div>
+              <div class="filter__btns btn-group flex-parent">
+                <a href="#" class="btn action flex-child active" data-type="buy">Buy</a>
+                <a href="#" class="btn action flex-child" data-type="rent">Rent</a>
+              </div>              
+            </div> -->
+  
+            <div class="featured-vendor-container buy">
+              <div class="featured-vendor">
+                <div class="featured-vendor__inner shadow__item flex-parent__wrap flex-parent__center-cross">
+                  <div class="featured__details flex-child__100">
+                    <div class="featured__name">
+                      <span class="featured__label">Best Vendor: </span>
+                      <span class="featured__text">{{bestVendor.bestVendorName}}</span>
+                    </div>
+                    <div class="featured__condition">
+                      <span class="featured__label">Condition: </span>
+                      <span class="featured__text"><strong>eBook</strong></span>
+                    </div>
+                  </div>
+                  <div class="featured__price-container flex-child__fill flex-parent__center-cross flex-parent__space-between">
+                    <div class="flex-child__auto">
+                      <div class="featured__label">Best Price</div>
+                      <div class="featured__price">${{bestVendor.bestVendorPrice }}
+                      </div>
+                    </div>
+                    <div class="flex-child__auto">
+                      <a href=t arget="_blank" class="link--buy link--buy--buy btn featured action" data-price="8.99" data-vendor="Vital Source"
+                        data-vendorid="820" data-rank="1">Buy</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h3 class="price__heading">All Vendor Price Offers</h3>
+  
+            <div class="price__item flex-parent__center-cross price__item--header">
+              <div class="price__detail price__detail--name flex-child__fill">
+                <strong>Name</strong>
+              </div>
+  
+              <div class="price__child price__price flex-child__auto">
+                <strong>Price</strong>
+              </div>
+            </div>
+  
+            <div class="price-container buy-side" *ngFor="let vendor of vendors" >
+              <div class="price__item flex-parent__center-cross price__item--buy">
+                <div class="price__detail price__detail--name flex-child__fill">
+                  {{vendor.name}}
+                </div>
+  
+                <div class="price__detail price__detail--price flex-child__auto flex-parent__center-cross">
+                  <div class="price__child price__price flex-child__auto"> <span *ngIf="!isNaN(vendor.price)">$</span> {{vendor.price}}</div>
+                  <div class="price__child price__link flex-child__auto">
+                    <a *ngIf="!isNaN(vendor.price)" :href="vendor.url" data-price="8.99" data-rank="1" data-vendor="Vital Source" data-vendorid="820">Buy</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+      </section>
+      <!-- Buy Table Section Ends -->
+    </div>
+    <div style="box-shadow: -10px -10px 5px lightgrey;" >
+      <div class="instruction__container flex-parent__center-main">
+        <div class="instruction">
+          <div class="instruction__number">1</div>
+          <div class="instruction__title">Search</div>
+          <div class="instruction__text">42 buyback vendors</div>
+        </div>
+        <div class="instruction__sep"></div>
+        <div class="instruction">
+          <div class="instruction__number">2</div>
+          <div class="instruction__title">Compare</div>
+          <div class="instruction__text">prices and seller feedback</div>
+        </div>
+  
+      </div>
+      <section class="home__about--container">
+        <div class="width-wrapper">
+          <div class="home__about flex-parent__center-cross flex-parent__wrap">
+            <h2 class="home__about--heading">Why use Find Book Deals? </h2>
+            <p class="styled-p white-text flex-child__fill">Find Book Deals helps you sell textbooks and used books for the
+              most money by comparing offers from over 35 book buyback vendors with a single search.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  
+    <!--Recently searched books-->
+    <section class="home__recents">
+      <div class="width-wrapper">
+        <h2 class="section__title" style="font-family:Oswald,sans-serif">Recently Searched Books</h2>
+        <div class="recents grid">
+          <div class="recent__book shadow__item grid__item flex-parent" *ngFor="let book of recentlysearched" >
+  
+            <div class="recent__image flex-child__auto" >
+  
+            </div>
+            <div class="recent__details flex-child__fill flex-parent__column">
+              <div class="recent__isbn flex-child__auto">
+                <span class="recent__isbn--label">ISBN: </span>{{book.isbn13}}</div>
+              <div class="recent__price flex-child__fill">{{book.price}}</div>
+              <div class="recent__buttons flex-child__auto flex-parent">
+                <a href="/sell/1305585453-contemporary-mathematics-for-business-consumers-brief-editio" class="btn btn--accent flex-child__fill">Sell</a>
+                <a href="/buy/1305585453-contemporary-mathematics-for-business-consumers-brief-editio" class="btn flex-child__fill">Buy</a>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+    </section>
+  
+  </div>
